@@ -1,36 +1,51 @@
 version: '3.8'
+
 services:
+  # === BACKEND (Node.js API) ===
   backend:
     build: ./backend
+    container_name: emilios_cogs_backend
     ports:
       - "5000:5000"
-    env_file: ./backend/.env
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
     depends_on:
       - mongo
     networks:
       - cogs_net
 
+  # === FRONTEND (React + Vite) ===
   frontend:
     build: ./frontend
+    container_name: emilios_cogs_frontend
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=http://localhost:5000/api
+      - NODE_ENV=production
+      # 👇 API URL pública y segura (usa subdominio backend)
+      - VITE_API_URL=https://api.cogs.downundersolutions.com/api
     depends_on:
       - backend
     networks:
       - cogs_net
 
+  # === DATABASE (MongoDB) ===
   mongo:
     image: mongo:6
+    container_name: emilios_cogs_mongo
+    restart: always
     volumes:
       - mongo_data:/data/db
     networks:
       - cogs_net
 
+# === VOLUMES ===
 volumes:
   mongo_data:
+
+# === NETWORKS ===
 networks:
   cogs_net:
     driver: bridge
-
