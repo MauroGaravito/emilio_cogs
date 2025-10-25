@@ -20,7 +20,10 @@ services:
       - dokploy-network
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: https://api.cogs.downundersolutions.com/api
     container_name: emilios_cogs_frontend
     restart: always
     environment:

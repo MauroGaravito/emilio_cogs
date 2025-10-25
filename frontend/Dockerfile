@@ -2,26 +2,27 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Install dependencies
+# Copy and install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy source and build
+# Copy source code
 COPY . .
+
+# Pass API URL to Vite at build time
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
+# Build the static files
 RUN npm run build
 
-# --- Stage 2: Serve static files with a lightweight server ---
+# --- Stage 2: Serve the static files ---
 FROM node:18-alpine
 WORKDIR /app
 
-# Install 'serve' to host static files
 RUN npm install -g serve
 
-# Copy build output from builder stage
 COPY --from=builder /app/dist ./dist
 
-# Expose port
 EXPOSE 5173
-
-# Serve built files
 CMD ["serve", "-s", "dist", "-l", "5173"]
