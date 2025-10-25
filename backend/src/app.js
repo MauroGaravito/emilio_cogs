@@ -36,15 +36,9 @@ app.use('/api/recipes', recipeRoutes);
 app.use('/api/ingredients', ingredientRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Simple health for AdminJS routing verification (avoid /api/admin* prefix)
+// Simple health for AdminJS routing verification
 app.get('/api/admin-healthz', (req, res) => {
-  res.json({ status: 'ok', adminRoot: '/api/admin' });
-});
-
-// Safety redirects in case proxy/client hits /admin paths
-app.use('/admin', (req, res) => {
-  const target = `/api${req.originalUrl}`;
-  return res.redirect(302, target);
+  res.json({ status: 'ok', adminRoot: '/admin' });
 });
 
 // AdminJS setup (only admins can login)
@@ -52,8 +46,8 @@ const admin = new AdminJS({
   branding: {
     companyName: "Emilio's COGS",
   },
-  // Mount under /api so existing proxy rules route correctly
-  rootPath: '/api/admin',
+  // Mount under /admin; Caddy routes /admin/* to backend
+  rootPath: '/admin',
   resources: [
     {
       resource: User,
@@ -114,8 +108,8 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
     },
     cookieName: 'adminjs',
     cookiePassword: process.env.ADMINJS_COOKIE_SECRET || process.env.JWT_SECRET || 'adminjs-secret',
-    loginPath: '/api/admin/login',
-    logoutPath: '/api/admin/logout',
+    loginPath: '/admin/login',
+    logoutPath: '/admin/logout',
   },
   null,
   {
