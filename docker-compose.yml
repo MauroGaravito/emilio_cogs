@@ -8,10 +8,13 @@ services:
       - ./backend/.env
     environment:
       - NODE_ENV=production
+      - MONGO_URI=mongodb://emilios_cogs_mongo:27017/emilios
+      - JWT_SECRET=supersecretkey
+      - PORT=5000
     depends_on:
       - mongo
     networks:
-      - cogs_net
+      - dokploy-network
 
   frontend:
     build: ./frontend
@@ -24,7 +27,7 @@ services:
     depends_on:
       - backend
     networks:
-      - cogs_net
+      - dokploy-network
 
   mongo:
     image: mongo:6
@@ -33,12 +36,11 @@ services:
     volumes:
       - mongo_data:/data/db
     networks:
-      - cogs_net
+      - dokploy-network
 
 volumes:
   mongo_data:
 
 networks:
-  cogs_net:
+  dokploy-network:
     external: true
-    name: dokploy-network
