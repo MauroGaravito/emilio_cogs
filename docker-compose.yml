@@ -23,12 +23,13 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: https://api.cogs.downundersolutions.com/api
+        # ✅ ahora usa API relativa al mismo dominio
+        VITE_API_URL: /api
     container_name: emilios_cogs_frontend
     restart: always
     environment:
       NODE_ENV: production
-      VITE_API_URL: https://api.cogs.downundersolutions.com/api
+      VITE_API_URL: /api
     expose:
       - "5173"
     depends_on:
