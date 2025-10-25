@@ -41,6 +41,12 @@ app.get('/api/admin-healthz', (req, res) => {
   res.json({ status: 'ok', adminRoot: '/admin' });
 });
 
+// Redirect any stale /api/admin* requests to /admin*
+app.use('/api/admin', (req, res) => {
+  const to = req.originalUrl.replace(/^\/api\/admin/, '/admin');
+  return res.redirect(302, to);
+});
+
 // AdminJS setup (only admins can login)
 const admin = new AdminJS({
   branding: {
