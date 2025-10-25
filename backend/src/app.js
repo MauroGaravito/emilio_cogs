@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import AdminJS from 'adminjs';
 import * as AdminJSMongoose from '@adminjs/mongoose';
 import AdminJSExpress from '@adminjs/express';
+import MongoStore from 'connect-mongo';
 
 import authRoutes from './routes/authRoutes.js';
 import recipeRoutes from './routes/recipeRoutes.js';
@@ -34,6 +35,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/ingredients', ingredientRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+
+// Simple health for AdminJS routing verification (avoid /api/admin* prefix)
+app.get('/api/admin-healthz', (req, res) => {
+  res.json({ status: 'ok', adminRoot: '/api/admin' });
+});
 
 // AdminJS setup (only admins can login)
 const admin = new AdminJS({
@@ -109,6 +115,11 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
     resave: false,
     saveUninitialized: false,
     secret: process.env.ADMINJS_COOKIE_SECRET || process.env.JWT_SECRET || 'adminjs-secret',
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: 'adminjs-sessions',
+      stringify: false,
+    }),
   }
 );
 
