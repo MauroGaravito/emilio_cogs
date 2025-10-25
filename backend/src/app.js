@@ -41,6 +41,12 @@ app.get('/api/admin-healthz', (req, res) => {
   res.json({ status: 'ok', adminRoot: '/api/admin' });
 });
 
+// Safety redirects in case proxy/client hits /admin paths
+app.use('/admin', (req, res) => {
+  const target = `/api${req.originalUrl}`;
+  return res.redirect(302, target);
+});
+
 // AdminJS setup (only admins can login)
 const admin = new AdminJS({
   branding: {
@@ -108,10 +114,9 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
     },
     cookieName: 'adminjs',
     cookiePassword: process.env.ADMINJS_COOKIE_SECRET || process.env.JWT_SECRET || 'adminjs-secret',
-    loginPath: '/api/admin/login',
-    logoutPath: '/api/admin/logout',
   },
-  null,
+  '/api/admin/login',
+  '/api/admin/logout',
   {
     // cookie/session options
     resave: false,
