@@ -40,8 +40,55 @@ const admin = new AdminJS({
   branding: {
     companyName: "Emilio's COGS",
   },
-  rootPath: '/admin',
-  resources: [User, Ingredient, Recipe],
+  // Mount under /api so existing proxy rules route correctly
+  rootPath: '/api/admin',
+  resources: [
+    {
+      resource: User,
+      options: {
+        listProperties: ['name', 'email', 'role', 'createdAt'],
+        filterProperties: ['name', 'email', 'role', 'createdAt'],
+        showProperties: ['name', 'email', 'role', 'createdAt', '_id'],
+        editProperties: ['name', 'email', 'role', 'password'],
+        properties: {
+          password: {
+            type: 'password',
+            isVisible: { list: false, filter: false, show: false, edit: true },
+            isRequired: { new: true, edit: false },
+          },
+          _id: { isVisible: { list: false, filter: false, show: true, edit: false } },
+        },
+        actions: {
+          new: {
+            before: async (request) => {
+              if (request.payload?.password) {
+                const salt = await bcrypt.genSalt(10);
+                const hashed = await bcrypt.hash(request.payload.password, salt);
+                request.payload = { ...request.payload, password: hashed };
+              }
+              return request;
+            },
+          },
+          edit: {
+            before: async (request) => {
+              if (typeof request.payload?.password === 'string' && request.payload.password.trim().length > 0) {
+                const salt = await bcrypt.genSalt(10);
+                const hashed = await bcrypt.hash(request.payload.password, salt);
+                request.payload = { ...request.payload, password: hashed };
+              } else if (request.payload && 'password' in request.payload) {
+                // prevent clearing password when left empty
+                const { password, ...rest } = request.payload;
+                request.payload = rest;
+              }
+              return request;
+            },
+          },
+        },
+      },
+    },
+    Ingredient,
+    Recipe,
+  ],
 });
 
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
