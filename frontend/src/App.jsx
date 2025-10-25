@@ -13,6 +13,7 @@ import RecipesPage from './pages/RecipesPage';
 import IngredientsPage from './pages/IngredientsPage';
 import RecipeForm from './pages/RecipeForm';
 import RecipeDetail from './pages/RecipeDetail';
+import ExternalRedirect from './components/ExternalRedirect';
 
 const App = () => {
   const theme = useMemo(() => createTheme({ palette: { mode: 'dark' } }), []);
@@ -25,6 +26,8 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            {/* Redirect /admin* on the frontend to backend AdminJS under /api/admin */}
+            <Route path="/admin/*" element={<ExternalRedirect baseFrom="/admin" baseTo="/api/admin" />} />
             <Route element={<ProtectedRoute />}>
               <Route element={<Layout />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
