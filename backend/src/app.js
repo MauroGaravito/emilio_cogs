@@ -114,9 +114,10 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
     },
     cookieName: 'adminjs',
     cookiePassword: process.env.ADMINJS_COOKIE_SECRET || process.env.JWT_SECRET || 'adminjs-secret',
+    loginPath: '/api/admin/login',
+    logoutPath: '/api/admin/logout',
   },
-  '/api/admin/login',
-  '/api/admin/logout',
+  null,
   {
     // cookie/session options
     resave: false,
