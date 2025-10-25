@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  # === BACKEND (Node.js API) ===
   backend:
     build: ./backend
     container_name: emilios_cogs_backend
@@ -16,7 +13,6 @@ services:
     networks:
       - cogs_net
 
-  # === FRONTEND (React + Vite) ===
   frontend:
     build: ./frontend
     container_name: emilios_cogs_frontend
@@ -24,14 +20,12 @@ services:
       - "5173:5173"
     environment:
       - NODE_ENV=production
-      # 👇 API URL pública y segura (usa subdominio backend)
       - VITE_API_URL=https://api.cogs.downundersolutions.com/api
     depends_on:
       - backend
     networks:
       - cogs_net
 
-  # === DATABASE (MongoDB) ===
   mongo:
     image: mongo:6
     container_name: emilios_cogs_mongo
@@ -41,11 +35,10 @@ services:
     networks:
       - cogs_net
 
-# === VOLUMES ===
 volumes:
   mongo_data:
 
-# === NETWORKS ===
 networks:
   cogs_net:
-    driver: bridge
+    external: true
+    name: dokploy-network
