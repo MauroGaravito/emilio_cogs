@@ -360,3 +360,64 @@ VITE_API_URL=http://localhost:5000/api
 
 - CORS/API URL issues:
   - If the frontend runs outside Docker, set `VITE_API_URL` accordingly.
+
+---
+
+## Admin Panel (AdminJS)
+
+- URL: `/admin` (served by the backend). Only users with role `admin` can access.
+- Resources: Users, Ingredients, Recipes. User passwords are hashed on create/edit.
+- Sessions: stored in MongoDB (connect-mongo).
+- Health:
+  - API: `GET /api/health` → `{ status: 'ok' }`
+  - Admin: `GET /api/admin-healthz` → `{ status: 'ok', adminRoot: '/admin' }`
+
+### Environment variables (backend)
+
+Add these to `backend/.env` in addition to the existing ones:
+
+```
+ADMIN_NAME=Administrator
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=change-me-now
+ADMINJS_COOKIE_SECRET=supersecretkey
+```
+
+- On first boot, if no users exist, the backend auto-creates an admin using `ADMIN_*` values.
+
+### Reverse proxy (Caddy)
+
+Ensure both `/admin` and `/admin/*` are routed to the backend along with the API:
+
+```
+cogs.downundersolutions.com {
+    encode gzip
+
+    @api path /api/* /admin /admin/* /auth/* /uploads/* /favicon.ico /static/*
+    handle @api {
+        reverse_proxy emilios_cogs_backend:5000
+    }
+
+    handle {
+        reverse_proxy emilios_cogs_frontend:5173
+    }
+
+    log {
+        output file /var/log/caddy/cogs.access.log
+        format json
+    }
+}
+```
+
+If Caddy runs outside Docker, expose the backend port and proxy to host/IP instead of the container DNS name.
+
+### Troubleshooting (AdminJS)
+
+- `/admin` shows the SPA or redirects to `/login`:
+  - Add `/admin` and `/admin/*` to the backend matcher in Caddy.
+- `502 Bad Gateway` on API/Admin routes:
+  - Caddy cannot reach the backend; verify network or proxy target.
+- `ERR_TOO_MANY_REDIRECTS`:
+  - Ensure AdminJS runs under `/admin` and there are no client-side rewrites to `/api/admin`.
+- `404 /api/admin` after login:
+  - AdminJS lives at `/admin`; the server redirects `/api/admin*` → `/admin*` automatically.
