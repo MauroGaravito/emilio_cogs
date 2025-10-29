@@ -1,28 +1,38 @@
+version: "3.9"
+
 services:
   backend:
     build: ./backend
     container_name: emilios_cogs_backend
     restart: always
+    env_file:
+      - ./backend/.env
     environment:
       NODE_ENV: production
       PORT: 5000
+
       # --- MongoDB ---
       MONGO_USER: ${MONGO_USER}
       MONGO_PASS: ${MONGO_PASS}
       MONGO_URI: ${MONGO_URI}
+
       # --- JWT / Secrets ---
       JWT_SECRET: ${JWT_SECRET}
       ADMINJS_COOKIE_SECRET: ${ADMINJS_COOKIE_SECRET}
+
       # --- Admin inicial ---
       ADMIN_NAME: ${ADMIN_NAME}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      # ✅ ADMIN_PASSWORD eliminado: ahora el bootstrap lo genera automáticamente
+
     expose:
       - "5000"
     depends_on:
       - mongo
     networks:
       - dokploy-network
+    command: >
+      sh -c "node src/server.js"
 
   frontend:
     build:
