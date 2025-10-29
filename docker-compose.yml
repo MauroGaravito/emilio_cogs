@@ -1,17 +1,22 @@
-version: "3.8"
-
 services:
   backend:
     build: ./backend
     container_name: emilios_cogs_backend
     restart: always
-    env_file:
-      - ./backend/.env
     environment:
       NODE_ENV: production
-      MONGO_URI: mongodb://admin_cogs:${MONGO_PASS}@emilios_cogs_mongo:27017/emilios?authSource=admin
-      JWT_SECRET: ${JWT_SECRET}
       PORT: 5000
+      # --- MongoDB ---
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASS: ${MONGO_PASS}
+      MONGO_URI: ${MONGO_URI}
+      # --- JWT / Secrets ---
+      JWT_SECRET: ${JWT_SECRET}
+      ADMINJS_COOKIE_SECRET: ${ADMINJS_COOKIE_SECRET}
+      # --- Admin inicial ---
+      ADMIN_NAME: ${ADMIN_NAME}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     expose:
       - "5000"
     depends_on:
@@ -23,6 +28,7 @@ services:
     build:
       context: ./frontend
       args:
+        # ✅ URL relativa al mismo dominio (Dokploy proxy)
         VITE_API_URL: /api
     container_name: emilios_cogs_frontend
     restart: always
@@ -40,9 +46,9 @@ services:
     image: mongo:6
     container_name: emilios_cogs_mongo
     restart: always
-    command: ["mongod", "--auth"]  # ✅ habilita autenticación obligatoria
+    command: ["mongod", "--auth"]
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin_cogs
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
       MONGO_INITDB_DATABASE: emilios
     volumes:
