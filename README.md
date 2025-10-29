@@ -421,3 +421,5 @@ If Caddy runs outside Docker, expose the backend port and proxy to host/IP inste
   - Ensure AdminJS runs under `/admin` and there are no client-side rewrites to `/api/admin`.
 - `404 /api/admin` after login:
   - AdminJS lives at `/admin`; the server redirects `/api/admin*` → `/admin*` automatically.
+
+  test
