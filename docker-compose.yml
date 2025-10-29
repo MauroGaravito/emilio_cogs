@@ -9,8 +9,8 @@ services:
       - ./backend/.env
     environment:
       NODE_ENV: production
-      MONGO_URI: mongodb://emilios_cogs_mongo:27017/emilios
-      JWT_SECRET: supersecretkey
+      MONGO_URI: mongodb://admin_cogs:${MONGO_PASS}@emilios_cogs_mongo:27017/emilios?authSource=admin
+      JWT_SECRET: ${JWT_SECRET}
       PORT: 5000
     expose:
       - "5000"
@@ -23,7 +23,6 @@ services:
     build:
       context: ./frontend
       args:
-        # ✅ ahora usa API relativa al mismo dominio
         VITE_API_URL: /api
     container_name: emilios_cogs_frontend
     restart: always
@@ -41,6 +40,11 @@ services:
     image: mongo:6
     container_name: emilios_cogs_mongo
     restart: always
+    command: ["mongod", "--auth"]  # ✅ habilita autenticación obligatoria
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin_cogs
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+      MONGO_INITDB_DATABASE: emilios
     volumes:
       - mongo_data:/data/db
     networks:
