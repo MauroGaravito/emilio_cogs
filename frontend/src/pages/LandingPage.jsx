@@ -5,20 +5,20 @@ const DEMO_URL = 'https://downundersolutions.com/contact-web-developer-blacktown
 
 const features = [
   {
-    title: "Gestión de Recetas",
-    description: "Crea, edita y organiza recetas con costos y rendimiento.",
+    title: 'Recipe Management',
+    description: 'Create, edit, and organize recipes with costs and yield.',
   },
   {
-    title: "Ingredientes & Costos",
-    description: "Administra ingredientes, precios y calcula COGS automáticamente.",
+    title: 'Ingredients & Costs',
+    description: 'Manage ingredients and prices, auto-calculate COGS.',
   },
   {
-    title: "Dashboard en Tiempo Real",
-    description: "Indicadores clave y atajos para decisiones rápidas.",
+    title: 'Real-time Dashboard',
+    description: 'Key metrics and shortcuts for quick decisions.',
   },
   {
-    title: "Control de Accesos",
-    description: "Perfiles y roles para mantener tu operación segura.",
+    title: 'Access Control',
+    description: 'Roles and permissions to keep operations secure.',
   },
 ];
 
@@ -42,23 +42,22 @@ const LandingPage = () => {
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={12} md={7}>
               <Stack spacing={2}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Box component="img" src="/logo.png" alt="Emilio's COGS" sx={{ height: 36 }} />
-                  <Typography variant="h5" color="text.secondary">Emilio's COGS</Typography>
-                </Box>
+                <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: 1.2 }}>
+                  COGS Platform
+                </Typography>
 
                 <Typography variant="h2" sx={{ fontWeight: 700, lineHeight: 1.1 }}>
-                  Controla tus costos de cocina con precisión
+                  Control your kitchen costs with precision
                 </Typography>
 
                 <Typography variant="h6" color="text.secondary">
-                  Una suite ligera para chefs y negocios gastronómicos: gestiona recetas, ingredientes y costos
-                  en un solo lugar, con una interfaz rápida y clara.
+                  A lightweight suite for chefs and food businesses: manage recipes, ingredients, and costs
+                  in one fast, clear interface.
                 </Typography>
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 2 }}>
                   <Button variant="contained" size="large" onClick={() => navigate('/login')}>
-                    Iniciar sesión
+                    Sign in
                   </Button>
                   <Button
                     variant="outlined"
@@ -69,7 +68,7 @@ const LandingPage = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Solicitar demo
+                    Request demo
                   </Button>
                   <Button
                     variant="text"
@@ -107,18 +106,19 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* Footer minimal */}
+      {/* Footer minimal */
+      }
       <Container maxWidth="lg" sx={{ py: 3 }}>
         <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={2}>
           <Typography variant="body2" color="text.secondary">
-            © {new Date().getFullYear()} Emilio's COGS
+            © {new Date().getFullYear()} COGS
           </Typography>
           <Stack direction="row" spacing={2}>
             <Button size="small" color="inherit" onClick={() => navigate('/login')}>
-              Entrar al sistema
+              Sign in
             </Button>
             <Button size="small" color="inherit" component="a" href={DEMO_URL} target="_blank" rel="noopener noreferrer">
-              Solicitar demo
+              Request demo
             </Button>
           </Stack>
         </Box>
@@ -128,4 +128,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-
