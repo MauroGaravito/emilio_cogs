@@ -30,6 +30,7 @@ services:
       - mongo
     networks:
       - dokploy-network
+      - shared_caddy_net
     command: >
       sh -c "node src/server.js"
 
@@ -50,6 +51,7 @@ services:
       - backend
     networks:
       - dokploy-network
+      - shared_caddy_net  # ✅ Mantiene conexión con Caddy siempre
 
   mongo:
     image: mongo:6
@@ -70,4 +72,6 @@ volumes:
 
 networks:
   dokploy-network:
+    external: true
+  shared_caddy_net:     # ✅ Añadido para conexión permanente con Caddy
     external: true
