@@ -36,10 +36,10 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
       args:
         VITE_API_URL: /api
     container_name: emilios_cogs_frontend
-    working_dir: /app
     restart: always
     environment:
       NODE_ENV: production
@@ -50,8 +50,6 @@ services:
       - backend
     networks:
       - dokploy-network
-    command: >
-      sh -c "npm install && npm run build && npx serve -s dist -l 80"
 
   mongo:
     image: mongo:6

@@ -20,9 +20,12 @@ RUN npm run build
 FROM node:18-alpine
 WORKDIR /app
 
+# Install static file server
 RUN npm install -g serve
 
+# Copy build output from builder stage
 COPY --from=builder /app/dist ./dist
 
-EXPOSE 5173
-CMD ["serve", "-s", "dist", "-l", "5173"]
+# Serve on port 80 (not 5173)
+EXPOSE 80
+CMD ["serve", "-s", "dist", "-l", "80"]
