@@ -13,6 +13,7 @@ import RecipesPage from './pages/RecipesPage';
 import IngredientsPage from './pages/IngredientsPage';
 import RecipeForm from './pages/RecipeForm';
 import RecipeDetail from './pages/RecipeDetail';
+import LandingPage from './pages/LandingPage';
 
 const App = () => {
   const theme = useMemo(() => createTheme({ palette: { mode: 'dark' } }), []);
@@ -24,6 +25,7 @@ const App = () => {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route element={<ProtectedRoute />}>
               <Route element={<Layout />}>
@@ -33,7 +35,6 @@ const App = () => {
                 <Route path="/recipes/:id" element={<RecipeDetail />} />
                 <Route path="/recipes/edit/:id" element={<RecipeForm />} />
                 <Route path="/ingredients" element={<IngredientsPage />} />
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
