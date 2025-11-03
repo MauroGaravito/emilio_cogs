@@ -23,7 +23,7 @@ services:
       # --- Admin inicial ---
       ADMIN_NAME: ${ADMIN_NAME}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
-      # ✅ ADMIN_PASSWORD eliminado: ahora el bootstrap lo genera automáticamente
+      # ✅ ADMIN_PASSWORD eliminado: el bootstrap lo genera automáticamente
 
     expose:
       - "5000"
@@ -46,11 +46,13 @@ services:
       NODE_ENV: production
       VITE_API_URL: /api
     expose:
-      - "5173"
+      - "80"
     depends_on:
       - backend
     networks:
       - dokploy-network
+    command: >
+      sh -c "npm ci && npm run build && npx serve -s dist -l 80"
 
   mongo:
     image: mongo:6
